@@ -1,0 +1,47 @@
+# camcuts-gui — la ventana de CAMCUTS (diseño "Marfil") y el binario `camcuts.exe`.
+# Usa eframe/egui con el backend wgpu; el análisis y la exportación los hace `camcuts-core`.
+[package]
+name = "camcuts-gui"
+edition.workspace = true
+version.workspace = true
+description = "Ventana de escritorio de CAMCUTS (diseño Marfil)"
+
+[[bin]]
+name = "camcuts"
+path = "src/main.rs"
+
+# la edición Bodas: el mismo código con la edición fijada al arrancar (diseño Salvia, momentos de boda)
+[[bin]]
+name = "camcuts-bodas"
+path = "src/main_bodas.rs"
+
+[lib]
+# la lógica de la ventana vive en una librería para que las pruebas sin pantalla (egui_kittest) la usen
+name = "camcuts_gui"
+path = "src/lib.rs"
+
+[dependencies]
+camcuts-core = { path = "../camcuts-core" }
+# los modelos: el mismo camcuts.exe analiza en un proceso hijo (`camcuts.exe --analizar ...`)
+camcuts-infer = { path = "../camcuts-infer" }
+# para leer las opciones de análisis con el mismo parser que la CLI del núcleo
+clap = { version = "4", features = ["derive"] }
+# solo wgpu: nada de OpenGL; sin fuentes por defecto innecesarias salvo las de respaldo de egui (símbolos)
+eframe = { version = "0.37", default-features = false, features = ["wgpu", "default_fonts", "accesskit"] }
+egui = "0.37"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+# diálogos nativos de Windows (carpeta, archivos, guardar como)
+rfd = { version = "0.17", default-features = false }
+
+# el análisis (proceso hijo) y sus ffmpeg van en un Job Object con KILL_ON_JOB_CLOSE: mueren con la
+# ventana aunque esta se cuelgue o la maten. La 0.59 ya está en Cargo.lock y enlaza con las bibliotecas
+# de importación de windows-targets (sin raw-dylib), así compila con la toolchain GNU.
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_Security", "Win32_System_JobObjects", "Win32_System_Threading"] }
+
+[dev-dependencies]
+# pruebas sin ventana: render fuera de pantalla con wgpu a PNG
+egui_kittest = { version = "0.37", features = ["wgpu"] }
+image = { version = "0.25", default-features = false, features = ["png"] }

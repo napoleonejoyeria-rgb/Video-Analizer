@@ -1,0 +1,25 @@
+# camcuts-e2e — binario de pruebas de punta a punta del detector propio (training/).
+# Es la línea de comandos de CAMCUTS (la del núcleo) más la opción `--detector propio|world`.
+# Fuera del workspace a propósito (no toca camcuts-gui): compilar con el target/ compartido:
+#   cargo build --release --manifest-path training/e2e/Cargo.toml --target-dir target
+[package]
+name = "camcuts-e2e"
+version = "0.1.0"
+edition = "2021"
+
+# workspace propio y vacío: así cargo no lo confunde con un miembro del workspace de CAMCUTS
+[workspace]
+
+[dependencies]
+camcuts-core = { path = "../../crates/camcuts-core" }
+camcuts-infer = { path = "../../crates/camcuts-infer" }
+anyhow = "1"
+serde_json = "1"
+clap = { version = "4", default-features = false, features = ["std", "derive", "help", "usage", "error-context"] }
+
+# mismo perfil que el workspace, para reutilizar lo ya compilado en target/
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 4
+debug = false

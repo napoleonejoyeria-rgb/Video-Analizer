@@ -1,0 +1,55 @@
+# CAMCUTS: qué no va al repositorio.
+# Regla general: va el código, las pruebas con sus datos pequeños y la documentación.
+# No van las compilaciones, los paquetes armados, los modelos ni las salidas de bancos y entrenamiento.
+
+# --- Compilación ---
+/target/
+
+# --- Paquetes listos para usar (se arman con scripts/armar_dist.ps1) ---
+/dist/
+
+# --- Modelos ONNX y bibliotecas nativas ---
+# Pesan unos 1.6 GB. Se traen aparte y se comprueban con scripts/verificar_modelos.ps1 contra
+# models/MANIFIESTO.sha256 (ver docs: "Modelos"). Los .json de clases y textos sí van al repositorio.
+/models/**/*.onnx
+/models/**/*.pt
+/runtime/*.dll
+
+# --- Bancos, pruebas de robustez y regresión: salidas locales con material de la empresa ---
+/bench_*/
+/robustez/
+
+# --- Entrenamiento del detector propio: solo van los scripts, los cuadros de referencia del banco y el
+#     crate de evaluación camcuts-e2e (training/e2e, lo usan e2e_run.py y bench_eval.py) ---
+/training/*
+!/training/scripts/
+!/training/bench/
+!/training/e2e/
+/training/e2e/*.out
+
+# --- Capturas de la ventana de Bodas: muestran caras de personas reales. El repositorio es público,
+#     así que no se publican. Las pruebas capturas_bodas las vuelven a escribir en local. ---
+/design/snapshots/bodas_*.png
+
+# --- Turnos de GPU (GPU_TURNOS.md): archivos de bloqueo en tiempo de ejecución ---
+.gpu_lock
+.gpu_wait
+
+# --- Registros sueltos ---
+*_log.txt
+*_err.txt
+*.log
+
+# --- Python (scripts de exportación y entrenamiento) ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# --- Editores y sistema ---
+.vs/
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini

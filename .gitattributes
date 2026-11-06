@@ -1,0 +1,19 @@
+# Fin de línea: Git decide para el texto; los scripts de Windows siempre con CRLF.
+* text=auto
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Datos de prueba que se comparan byte a byte con las salidas de Python (CRLF incluidos): Git no los toca.
+crates/camcuts-core/tests/data/** -text
+fixtures/** -text
+
+# Binarios: sin conversión ni diff de texto.
+*.png binary
+*.jpg binary
+*.wav binary
+*.bin binary
+*.onnx binary
+*.dll binary
+*.exe binary
+*.pt binary

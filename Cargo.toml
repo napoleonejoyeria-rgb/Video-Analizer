@@ -1,0 +1,21 @@
+# CAMCUTS en Rust: un solo workspace con tres crates.
+#   camcuts-core  — medir, puntuar, cortar y exportar (sin modelos ni ventana)
+#   camcuts-infer — los modelos (detector, siluetas, pose, CLIP, voz) con ONNX Runtime + DirectML
+#   camcuts-gui   — la ventana (diseño "Marfil") y el binario `camcuts`
+[workspace]
+resolver = "2"
+members = ["crates/camcuts-core", "crates/camcuts-infer", "crates/camcuts-gui"]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 4
+debug = false
+
+# en desarrollo, las dependencias pesadas (imagen, ort, egui) compiladas con optimización
+[profile.dev.package."*"]
+opt-level = 2

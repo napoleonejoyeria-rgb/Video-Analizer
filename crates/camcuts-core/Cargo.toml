@@ -1,0 +1,33 @@
+# camcuts-core — el núcleo de CAMCUTS sin modelos ni ventana:
+#   muestrear (ffmpeg), medir nitidez/exposición, convertir color, puntuar, cortar tramos,
+#   exportar a DaVinci (OTIO/CSV) y leer/escribir la caché y el proyecto (mismo formato que Python).
+# Incluye el binario `camcuts-cli`, que replica las opciones de la línea de comandos de Python.
+[package]
+name = "camcuts-core"
+edition.workspace = true
+version.workspace = true
+description = "Núcleo de análisis y exportación de CAMCUTS"
+
+[lib]
+name = "camcuts_core"
+path = "src/lib.rs"
+
+[[bin]]
+name = "camcuts-cli"
+path = "src/bin/camcuts-cli.rs"
+
+[dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+# preserve_order: las claves del JSON salen en el mismo orden que en Python (caché, proyecto, OTIO)
+serde_json = { version = "1", features = ["preserve_order", "float_roundtrip"] }
+rayon = "1"
+# FFT en Rust puro para la correlación de fase (movimiento de cámara)
+rustfft = "6"
+# SHA-1 en Rust puro para el nombre de la caché de cada clip (igual que hashlib.sha1 en Python)
+sha1_smol = "1"
+clap = { version = "4", default-features = false, features = ["std", "derive", "help", "usage", "error-context"] }
+
+[dev-dependencies]
+# leer los PNG de fixtures/ (cuadros y siluetas de Python) en las pruebas
+image = { version = "0.25", default-features = false, features = ["png"] }

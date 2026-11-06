@@ -1,0 +1,32 @@
+# camcuts-infer — los modelos de CAMCUTS con ONNX Runtime + DirectML (respaldo en CPU):
+#   YOLO-World (joyas, personas, caras), MobileSAM (silueta de la joya), yolo11n-pose,
+#   CLIP ViT-B/32 (segunda opinión sobre detecciones débiles) y Silero VAD (voz).
+# Implementa el trait `Detector` de camcuts-core con el mismo pre- y posprocesado que la app de Python.
+#
+# Compilar: libloading (que usa ort con load-dynamic) necesita `dlltool.exe`. La toolchain GNU lo trae en
+#   %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-gnu\lib\rustlib\x86_64-pc-windows-gnu\bin\self-contained
+# y basta con añadir esa carpeta al PATH antes de `cargo build`.
+[package]
+name = "camcuts-infer"
+edition.workspace = true
+version.workspace = true
+description = "Inferencia de CAMCUTS (ONNX Runtime + DirectML)"
+
+[lib]
+name = "camcuts_infer"
+path = "src/lib.rs"
+
+[dependencies]
+camcuts-core = { path = "../camcuts-core" }
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# ONNX Runtime cargado en tiempo de ejecución (runtime/onnxruntime.dll, compilación DirectML):
+# (también el proveedor CUDA: la DLL GPU de `dist/runtime_cuda/`) sin enlazar nada en compilación, así que vale con la toolchain GNU. api-24 = ORT 1.24 (la DLL de runtime/).
+ort = { version = "=2.0.0-rc.15", default-features = false, features = ["std", "load-dynamic", "directml", "cuda", "api-24"] }
+# para precargar DirectML.dll desde runtime/ antes que la versión antigua de System32 (misma versión que ort)
+libloading = "0.9"
+
+[dev-dependencies]
+# solo para leer los PNG de fixtures/ en las pruebas
+image = { version = "0.25", default-features = false, features = ["png"] }

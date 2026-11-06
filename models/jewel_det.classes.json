@@ -1,0 +1,25 @@
+{
+ "names": [
+  "anillo",
+  "collar",
+  "cadena",
+  "arete",
+  "topo",
+  "pulsera",
+  "dije",
+  "persona",
+  "cara"
+ ],
+ "imgsz": 960,
+ "thresholds": {
+  "anillo": 0.4,
+  "collar": 0.4,
+  "cadena": 0.4,
+  "arete": 0.4,
+  "topo": 0.4,
+  "pulsera": 0.4,
+  "dije": 0.4
+ },
+ "default_threshold": 0.4,
+ "source": "C:\\Users\\Usuario\\Tools\\camcuts_rs\\training\\runs\\r6\\weights\\best.pt"
+}

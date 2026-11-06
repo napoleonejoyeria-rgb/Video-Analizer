@@ -1,0 +1,8 @@
+# Configuración de cargo para todo el workspace de CAMCUTS.
+#
+# Toolchain stable-x86_64-pc-windows-gnu sin MinGW completo: los crates con enlace "raw-dylib"
+# (windows-link / windows-sys 0.60+, libloading 0.9, ort-sys) necesitan crear bibliotecas de importación.
+# rustc usa dlltool para eso, y el dlltool de rustup necesita el ensamblador "as", que no está.
+# dlltool-lld.cmd hace lo mismo con rust-lld (incluido en la toolchain). Añadido por camcuts-infer (ort).
+[target.x86_64-pc-windows-gnu]
+rustflags = ["-C", "dlltool=C:/Users/Usuario/Tools/camcuts_rs/.cargo/dlltool-lld.cmd"]
